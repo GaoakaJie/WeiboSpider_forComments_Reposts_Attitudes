@@ -25,6 +25,7 @@
 -----
 - weibo_id = '详细博文的mid'<br>
 - cookie = 'your cookie 值'<br>
+
 **输出**
 -----
 会分别输出三个文件：<br>

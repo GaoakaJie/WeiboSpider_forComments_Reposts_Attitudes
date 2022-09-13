@@ -1,0 +1,2 @@
+# WeiboSpider_forComments_Reposts_Attitudes
+本项目是一个微博爬虫项目，旨在通过微博的mid获取到其对应的所有点赞、转发、评论与二级评论的相关数据。

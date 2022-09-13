@@ -1,6 +1,9 @@
-##功能
+功能
+===
 本程序可以根据**微博的mid**爬取**对应微博的点赞、转发与评论**的几乎全部信息，并将**结果写入csv文件**中。
-##代码结构
+
+代码结构
+===
 |文件名|函数名|功能|
 |----|-----|----|
 |parseAttitude|init|定义cookie、weibo_id、headers等参数|
@@ -15,11 +18,15 @@
 ||parse_secondary_comments|解析二级评论的所有信息|
 ||CsvPipeLineComment|创建csv文件并将解析好的result_lines列表写入文件|
 |start||输入weibo_id和cookie，运行整个程序|
-##输入和输出
-###**输入**
+
+输入和输出
+===
+**输入**
+-----
 - weibo_id = '详细博文的mid'<br>
-- cookie = 'your cookie 值'
-###**输出**
+- cookie = 'your cookie 值'<br>
+**输出**
+-----
 会分别输出三个文件：<br>
 *attitudes.csv:*<br>
 
@@ -51,8 +58,14 @@
 - secondary_user_screen_names:**二级评论**用户的名称
 - secondary_comment_content:**二级评论**的文本内容
 - secondary_comment_pic_urls:**二级评论**中包含的图片url
-##运行程序
+
+
+运行程序
+===
 输入weibo_id与cookie后直接运行start.py即可<br>
+
+tips:
+===
 **如何获取cookie**<br>
 1. 用Chrome打开[https://weibo.com/](https://weibo.com/)<br>
 2. 点击“立即登录”，完成私信验证或手机验证码验证，进入新版微博

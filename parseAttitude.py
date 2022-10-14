@@ -12,9 +12,15 @@ class parseAttitude():
         self.weibo_id = weibo_id
         self.referer = 'https://m.weibo.cn/detail/' + weibo_id
         self.headers = {
+<<<<<<< HEAD
             'Accept':'application/json, text/plain, */*',
             'Accept-Language': 'zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2',
             'Connection': 'keep-alive',
+=======
+            'Accept':
+                'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-US;q=0.7',
+>>>>>>> 15457c8d2b3f91e9250ad082455968b4ea355dc3
             'referer': self.referer,
             'cookie': self.cookie,
             'user-agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Mobile Safari/537.36'
@@ -27,6 +33,7 @@ class parseAttitude():
         response = requests.get(initial_url, headers=self.headers).json()
         while response['ok'] == 1:
             transmit_id, transmit_user_id, transmit_user_screen_name = [], [], []
+<<<<<<< HEAD
             try:
                 results_lines = []
                 data_list = response['data']['data']
@@ -46,6 +53,24 @@ class parseAttitude():
                 response = requests.get(initial_url, headers=self.headers).json()
             except Exception as e:
                 print(e)
+=======
+            results_lines = []
+            data_list = response['data']['data']
+            if data_list == None:  #可能存在有很多条点赞但只能解析到某一页，response返回的是成功获取数据，但获取到的data中为空值的情况（一般来说最多能获取到50页）
+                break;
+            n = len(data_list)
+            for i in range(n):
+                data = data_list[i]
+                # transmit_id.append(data['id'])
+                # transmit_user_id.append(data['user']['id'])
+                # transmit_user_screen_name.append(data['user']['screen_name'])
+                results_lines.append((self.weibo_id, data['id'], data['user']['id'], data['user']['screen_name']))
+            self.CsvPipeLineAttitude(results_lines)
+            time.sleep(2)
+            page_num += 1
+            initial_url = 'https://m.weibo.cn/api/attitudes/show?id=' + self.weibo_id + '&page=' + str(page_num)
+            response = requests.get(initial_url, headers=self.headers).json()
+>>>>>>> 15457c8d2b3f91e9250ad082455968b4ea355dc3
 
     def CsvPipeLineAttitude(self, results_lines):
         base_dir = '结果文件'

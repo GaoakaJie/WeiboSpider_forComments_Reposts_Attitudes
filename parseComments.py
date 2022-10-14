@@ -13,9 +13,15 @@ class parseComments():
         self.weibo_id = weibo_id
         self.referer = 'https://m.weibo.cn/detail/' + weibo_id
         self.headers = {
+<<<<<<< HEAD
             'Accept':'application/json, text/plain, */*',
             'Accept-Language': 'zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2',
             'Connection': 'keep-alive',
+=======
+            'Accept':
+                'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-US;q=0.7',
+>>>>>>> 15457c8d2b3f91e9250ad082455968b4ea355dc3
             'referer': self.referer,
             'cookie': self.cookie,
             'user-agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Mobile Safari/537.36'
@@ -76,6 +82,7 @@ class parseComments():
         results_lines = []
         results = []
         for i in range(n):
+<<<<<<< HEAD
             try:
                 # 评论id
                 comment_id = data_list[i]['mid']
@@ -114,6 +121,65 @@ class parseComments():
                     max_id = comments_detail_response['max_id']
                     # 提取翻页的max_id_type
                     max_id_type = comments_detail_response['max_id_type']
+=======
+            # 评论id
+            comment_id = data_list[i]['mid']
+            texts = data_list[i]['text']
+            # print(texts)
+            # sub替换掉标签内容
+            alts = ''.join(re.findall(r'alt=(.*?) ', texts))
+            pic_urls = ''.join(re.findall(r'src=(.*?) ', texts))
+            texts = re.sub("<span.*?</span>", alts, texts)  # 需要替换的内容，替换之后的内容，替换对象
+            # print(texts)
+            # 评论用户的id
+            user_id = data_list[i]['user']['id']
+            # 用户名
+            screen_names = data_list[i]['user']['screen_name']
+            # 是否有二级评论
+            has_comments = False
+            secondary_comments = data_list[i]['comments']
+            if secondary_comments:
+                has_comments = True
+            secondary_comments_num = data_list[i]['total_number']
+            results_lines.append(
+                (self.weibo_id, comment_id, user_id, screen_names, texts, pic_urls, has_comments, secondary_comments_num))
+            print(comment_id, texts, pic_urls, user_id, screen_names, has_comments, secondary_comments_num)
+
+            # 判断是否有二级评论，若有则解析二级评论的内容
+            if has_comments:
+                secondary_page_num = 1
+                # 构造评论详情的url
+                comments_url = f'https://m.weibo.cn/comments/hotFlowChild?cid={comment_id}&max_id=0&max_id_type=0'
+                comments_detail_response = requests.get(comments_url, headers=self.headers).json()
+                # print(comments_detail_response)
+
+                # 提取翻页的max_id
+                max_id = comments_detail_response['max_id']
+                # 提取翻页的max_id_type
+                max_id_type = comments_detail_response['max_id_type']
+
+                # 构造GET的请求参数
+                data = {
+                    'cid': comment_id,
+                    'max_id': max_id,
+                    'max_id_type': max_id_type
+                }
+
+                res = self.parse_secondary_comments(comment_id, comments_detail_response, secondary_page_num,
+                                                    results_lines)
+                time.sleep(10)
+                secondary_page_num += 1
+
+                while max_id != 0:
+                    new_comments_url = 'https://m.weibo.cn/comments/hotFlowChild?'
+                    new_comments_response = requests.get(new_comments_url, headers=self.headers,
+                                                         params=data).json()
+
+                    max_id = new_comments_response['max_id']
+                    # 提取翻页的max_id_type
+                    max_id_type = new_comments_response['max_id_type']
+                    # print(max_id, max_id_type)
+>>>>>>> 15457c8d2b3f91e9250ad082455968b4ea355dc3
 
                     # 构造GET的请求参数
                     data = {
@@ -122,6 +188,7 @@ class parseComments():
                         'max_id_type': max_id_type
                     }
 
+<<<<<<< HEAD
                     res = self.parse_secondary_comments(comment_id, comments_detail_response, secondary_page_num,
                                                         results_lines)
                     time.sleep(10)
@@ -151,6 +218,13 @@ class parseComments():
                     self.CsvPipeLineComment(results_lines)
             except Exception as e:
                 print(e)
+=======
+                    res = self.parse_secondary_comments(comment_id, new_comments_response, secondary_page_num,
+                                                        results_lines)
+                    secondary_page_num += 1
+            else:
+                self.CsvPipeLineComment(results_lines)
+>>>>>>> 15457c8d2b3f91e9250ad082455968b4ea355dc3
 
             print()
             results_lines.clear()
